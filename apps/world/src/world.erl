@@ -7,8 +7,6 @@
 
 -include_lib("erlgame/include/records.hrl").
 
--define(DEFAULT_COUNT, 0).
-
 
 %%%===================================================================
 %% Functions
@@ -18,15 +16,7 @@
 
 -spec create_area(reference()) -> #area{}.
 create_area(Tab) ->
-  % get area counter
-  {CountKey, Count} = db:get_count(Tab, area),
-  % save new area to db
-  NewCount = Count+1,
-  Area = #area{id=NewCount},
-  true = db:write(Tab, Area),
-  % update counter
-  ets:insert(Tab, {CountKey, NewCount}),
-  Area.
+  db:create(Tab, #area{}).
 
 create_connection(M) ->
   {Area1, Area2} = maps:get("point", M),
