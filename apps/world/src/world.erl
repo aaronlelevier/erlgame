@@ -7,6 +7,8 @@
 
 -include_lib("erlgame/include/records.hrl").
 
+-define(DEFAULT_COUNT, 0).
+
 
 %%%===================================================================
 %% Functions
@@ -14,10 +16,30 @@
 
 %% Create
 
-create_area(#{"id" := Id}) ->
-  #area{
-    id=Id
-  }.
+-spec create_area(reference()) -> #area{}.
+create_area(Tab) ->
+  % get area counter
+  CountKey = {area, count},
+  Count = case ets:lookup(Tab, CountKey) of
+    [] ->
+      % initialize Mod counter to 0
+      ets:insert(Tab, {CountKey, ?DEFAULT_COUNT}),
+      ?DEFAULT_COUNT;
+    [{_CountKey, CountValue}] ->
+      % on first call this initializes the first row's
+      % id to 1, db row's start with 1 not 0
+      CountValue
+  end,
+  % create new area
+  NewCount = Count+1,
+  Area = #area{
+    id=NewCount
+  },
+  % save new area to db
+  true = db:write(Tab, Area),
+  % save new count to db
+  ets:insert(Tab, {CountKey, NewCount}),
+  Area.
 
 create_connection(M) ->
   {Area1, Area2} = maps:get("point", M),
