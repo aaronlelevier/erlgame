@@ -19,25 +19,12 @@
 -spec create_area(reference()) -> #area{}.
 create_area(Tab) ->
   % get area counter
-  CountKey = {area, count},
-  Count = case ets:lookup(Tab, CountKey) of
-    [] ->
-      % initialize Mod counter to 0
-      ets:insert(Tab, {CountKey, ?DEFAULT_COUNT}),
-      ?DEFAULT_COUNT;
-    [{_CountKey, CountValue}] ->
-      % on first call this initializes the first row's
-      % id to 1, db row's start with 1 not 0
-      CountValue
-  end,
-  % create new area
-  NewCount = Count+1,
-  Area = #area{
-    id=NewCount
-  },
+  {CountKey, Count} = db:get_count(Tab, area),
   % save new area to db
+  NewCount = Count+1,
+  Area = #area{id=NewCount},
   true = db:write(Tab, Area),
-  % save new count to db
+  % update counter
   ets:insert(Tab, {CountKey, NewCount}),
   Area.
 
