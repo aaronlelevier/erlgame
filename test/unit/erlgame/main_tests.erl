@@ -14,9 +14,11 @@ main_test() ->
   %% world
   Tab = db:init(),
 
-  _Area1 = world:create_area(Tab),
+  Area1 = world:create_area(Tab),
 
-  ?assert(true).
-%%
-%%  ?assertEqual(1, Area1#area.id),
-%%  ?assertEqual([], Area1#area.connection).
+  ?assertEqual(1, Area1#area.id),
+  ?assertEqual([], Area1#area.connection),
+
+  Conn1 = world:create_connection(Tab),
+  ?assertEqual(1, Conn1#connection.id)
+.

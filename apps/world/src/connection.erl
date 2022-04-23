@@ -2,9 +2,9 @@
 %%% @author Aaron Lelevier
 %%% @doc
 %%% @end
-%%% Created : 16. Apr 2022 11:29 AM
+%%% Created : 23. Apr 2022 11:49 AM
 %%%-------------------------------------------------------------------
--module(area).
+-module(connection).
 -behavior(db_item_impl).
 -author("Aaron Lelevier").
 -vsn(1.0).
@@ -14,6 +14,5 @@
 
 -include_lib("erlgame/include/records.hrl").
 
-set_id(Area, Id) ->
-  Area2 = Area#area{id = Id},
-  Area2.
+set_id(Conn, Id) ->
+  Conn#connection{id = Id}.

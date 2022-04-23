@@ -12,7 +12,7 @@
 -include_lib("erlgame/include/macros.hrl").
 -include_lib("erlgame/include/records.hrl").
 
--define(DEFAULT_COUNT, 0).
+-define(DEFAULT_COUNT, 1).
 
 %%%===================================================================
 %% DB
@@ -67,7 +67,7 @@ next_id(Tab, Type) ->
     [{CountKey, CountValue}] ->
       % on first call this initializes the first row's
       % id to 1, db row's start with 1 not 0
-      CountValue
+      CountValue + 1
   end.
 
 
