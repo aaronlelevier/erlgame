@@ -14,20 +14,15 @@
 
 %% Create
 
--spec create_area(reference()) -> #area{}.
-create_area(Tab) ->
-  db:create(Tab, #area{}).
+%% creates a new 'area' entry in ETS with an id and returns the record
+-spec create_area(ets:tab()) -> #area{}.
+create_area(Ref) ->
+  db:create(Ref, #area{}).
 
-create_connection(M) ->
-  {Area1, Area2} = maps:get("point", M),
-  #connection{
-    id=maps:get("id", M),
-    point={
-      Area1#area{connection = [Area2#area.id | Area1#area.connection]},
-      Area2#area{connection = [Area1#area.id | Area2#area.connection]}
-    },
-    type=maps:get("type", M)
-  }.
+%% creates a new 'connection' entry in ETS with an id and returns the record
+-spec create_connection(ets:tab()) -> #connection{}.
+create_connection(Ref) ->
+  db:create(Ref, #connection{}).
 
 
 %%%===================================================================

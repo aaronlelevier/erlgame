@@ -6,7 +6,7 @@
   create/2,
   update/2,
   read/2,
-  get_count/2
+  next_id/2
 ]).
 
 -include_lib("erlgame/include/macros.hrl").
@@ -18,12 +18,12 @@
 %% DB
 %%%===================================================================
 
--spec init() -> reference().
+-spec init() -> ets:tab().
 init() ->
   ets:new(?DEFAULT_TABLE, [set]).
 
 
--spec write(reference(), tuple()) -> erlgame_type().
+-spec write(ets:tab(), erlgame_type()) -> erlgame_type().
 write(Tab, R) ->
   case ets:lookup(Tab, key(R)) of
     [] ->
@@ -33,10 +33,10 @@ write(Tab, R) ->
   end.
 
 
+-spec create(ets:tab(), erlgame_type()) ->  erlgame_type().
 create(Tab, R) ->
   {Type, undefined} = key(R),
-  Count = get_count(Tab, Type),
-  Id = Count + 1,
+  Id = next_id(Tab, Type),
   R2 = Type:set_id(R, Id),
   % create R
   ets:insert(Tab, {key(R2), R2}),
@@ -50,15 +50,14 @@ update(Tab, R) ->
   R.
 
 
--spec read(reference(), {atom(), integer()}) -> erlgame_type().
+-spec read(ets:tab(), {atom(), integer()}) -> erlgame_type().
 read(Tab, Key) ->
   [{Key, R}] = ets:lookup(Tab, Key),
   R.
 
--spec get_count(reference(), erlgame_type()) -> {CountKey, Count} when
-  CountKey :: {erlgame_type(), count},
-  Count :: integer().
-get_count(Tab, Type) ->
+%% Returns the id of the next ETS record to insert
+-spec next_id(ets:tab(), erlgame_type()) -> integer().
+next_id(Tab, Type) ->
   CountKey = {Type, count},
   case ets:lookup(Tab, CountKey) of
     [] ->
@@ -70,6 +69,7 @@ get_count(Tab, Type) ->
       % id to 1, db row's start with 1 not 0
       CountValue
   end.
+
 
 %%%===================================================================
 %% Private
