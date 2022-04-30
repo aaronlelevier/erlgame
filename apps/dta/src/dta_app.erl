@@ -22,7 +22,6 @@ stop(_State) ->
 
 %% internal functions
 start_deps() ->
-    start_dep(hackney),
     start_erlcloud().
 
 %% common startup
