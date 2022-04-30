@@ -1,12 +1,11 @@
-{application, erlgame,
+{application, dta,
  [{description, "An OTP application"},
   {vsn, "0.1.0"},
   {registered, []},
-  {mod, {erlgame_app, []}},
+  {mod, {dta_app, []}},
   {applications,
    [kernel,
-    stdlib,
-    dta
+    stdlib
    ]},
   {env,[]},
   {modules, []},
